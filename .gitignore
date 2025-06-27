@@ -1,0 +1,68 @@
+# === Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Environment / Secrets / Config ===
+.env
+.env.*
+*.env.*
+*.local
+secrets/
+settings.*
+*.pem
+*.key
+*.crt
+
+# Config files (any format)
+config/*.json
+config/*.yaml
+config/*.yml
+config/*.toml
+config/local.*
+config/dev.*
+config/test.*
+config/production.*
+
+# Include sanitized example config if needed
+!config/config.example.*
+
+# === Build Output / Cache ===
+dist/
+build/
+.cache/
+.next/
+out/
+.tmp/
+
+# === Coverage ===
+coverage/
+.nyc_output/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pkl
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# === OS and Editor Stuff ===
+.DS_Store
+Thumbs.db
+
+# === Editor/IDE Directories ===
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# === Misc ===
+*.log
+*.tsbuildinfo
