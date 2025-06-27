@@ -66,3 +66,6 @@ Thumbs.db
 # === Misc ===
 *.log
 *.tsbuildinfo
+
+
+venv/
