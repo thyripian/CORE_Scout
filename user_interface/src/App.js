@@ -4,7 +4,6 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomeComponent from './components/HomeComponent';
 import SearchComponent from './components/SearchComponent';
 import SearchResultsComponent from './components/SearchResultsComponent';
-import UpdateCheckerComponent from './components/UpdateCheckerComponent';
 import AboutComponent from './components/AboutComponent';
 import ContactComponent from './components/ContactComponent';
 import HistoryComponent from './components/HistoryComponent';
@@ -93,19 +92,15 @@ const App = () => {
             <Link to="/contact" onClick={() => setMenuOpen(false)}>
               Contact/Help
             </Link>
-            <Link to="/history" onClick={() => setMenuOpen(false)}>
-              History
-            </Link>
           </div>
         )}
 
         <div className="App-title">
-          <h1>CORE</h1>
+          <h1>SCOUT</h1>
         </div>
 
         <nav>
           <Link to="/search">Search</Link>
-          <Link to="/updates">Check for Updates</Link>
         </nav>
       </header>
 
@@ -116,12 +111,11 @@ const App = () => {
           <Route path="/" element={<HomeComponent />} />
           <Route path="/search" element={<SearchComponent />} />
           <Route path="/results" element={<SearchResultsComponent />} />
-          <Route path="/updates" element={<UpdateCheckerComponent />} />
           <Route path="/about" element={<AboutComponent />} />
           <Route path="/contact" element={<ContactComponent />} />
           <Route path="/history" element={<HistoryComponent />} />
           <Route path="/settings" element={<SettingsComponent />} />
-          <Route path="/view-report/:hash" element={<FullReportComponent />} />
+          <Route path="/report/:reportId" element={<FullReportComponent />} />
         </Routes>
       </main>
     </div>

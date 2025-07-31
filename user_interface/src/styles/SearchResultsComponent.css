@@ -1,231 +1,113 @@
-/* src/styles/SearchResultsComponent.css */
-
-.results-container {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
-  padding: 20px !important;
-  overflow-y: auto !important;
-  /* Allow scrolling if content overflows */
-  width: calc(100vw - 100px) !important;
-  position: relative !important;
-  box-sizing: border-box !important;
-  background-color: transparent !important;
-  margin-top: 3% !important;
-  padding-bottom: 20px !important;
-  /* Add space at the bottom */
-  margin-bottom: 2% !important;
+/* Container */
+.search-results-page {
+  background-color: #446148CC;
+  border: 1px solid #263a2a;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 2rem auto;
+  /* center within the viewport */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-
-.results-container .search-box-wrapper {
-  position: fixed;
-  top: 125px;
-  left: 10px;
-  /* Move search box-wrapper more to the left */
-  z-index: 3;
-  /* Ensure it stays above other elements */
-  width: auto;
-  /* Adjust width to prevent overlapping with other elements */
-  margin-bottom: 20px;
+/* When there is NO toolbar, reduce top padding */
+.search-results-page.no-toolbar {
+  padding-top: 1rem;
+  /* less head space */
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
-.results-container .search-box {
+/* Toolbar */
+.sr-toolbar {
   display: flex;
   align-items: center;
-  width: auto;
-  left: 55px;
-  /* Change to auto to avoid forcing full width */
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
-.results-container .search-input {
-  width: 300px;
-  /* Reduce width to fit better when pushed to the left */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  font-size: 1.2em;
-  font-family: 'Roboto', sans-serif;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.results-container .search-button {
-  padding: 10px 20px;
-  font-size: 1.2em;
+.sr-kmz-btn {
+  background: #1a73e8;
+  color: #fff;
   border: none;
-  border-radius: 30px;
-  background-color: rgb(0, 0, 0);
-  color: white;
-  font-family: 'Roboto', sans-serif;
-  margin-left: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  height: auto;
+  font-weight: bold;
 }
 
-.results-container .view-toggle {
-  position: fixed;
-  top: 195px;
-  left: 10px;
-  /* Keep view toggle aligned to the left with search box */
-  z-index: 3;
+.sr-kmz-btn:hover {
+  background: #1558b0;
+}
+
+.sr-export-status {
+  margin-left: 1rem;
+  font-style: italic;
+  color: #333;
+}
+
+/* Header */
+.sr-header {
+  font-size: 1.25rem;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+/* Result list */
+.sr-list {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-
-.results-container .search-button:hover {
-  background-color: rgb(31, 31, 31) !important;
-  box-shadow: 0 2px 4px white !important;
+/* Individual “card” */
+/* If you prefer each card to pop more */
+.sr-card {
+  background-color: #fafafa;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: background 0.1s ease-in-out, box-shadow 0.1s;
+  margin-bottom: 1rem;
 }
 
-.results-container .view-toggle {
-  display: flex !important;
-  position: fixed !important;
-  top: 195px !important;
-  /* Position at the top of the wrapper */
-  left: 70px !important;
-  /* Position at the left of the wrapper */
-  height: 30px !important;
-  /* Fixed height */
-  width: 250px !important;
-  z-index: 2 !important;
-  /* Ensure the buttons are above other elements */
+.sr-card:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-.results-container .view-button {
-  padding: 5px 10px !important;
-  font-size: 0.9em !important;
-  border: none !important;
-  border-radius: 20px !important;
-  background-color: lightgray !important;
-  color: black !important;
-  cursor: pointer !important;
-  font-family: 'Roboto', sans-serif !important;
-  margin-right: 10px !important;
-  font-weight: bold !important;
-}
-
-.results-container .view-button.active {
-  background-color: black !important;
-  color: white !important;
-  box-shadow: 0 2px 4px white !important;
-}
-
-.results-list-container {
-  max-height: 645px;
-  /* Adjust height as needed */
-  overflow-y: auto;
-  /* Scrollable list view */
-}
-
-.search-results {
-  width: 100% !important;
-  text-align: left !important;
-  position: fixed !important;
-  top: 235px !important;
-  flex-grow: 1 !important;
-  border-radius: 10px !important;
-  padding: 20px !important;
-  box-sizing: border-box !important;
-  background-color: transparent !important;
-  z-index: 1 !important;
-}
-
-.search-results::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: calc(100vw - 150px) !important;
-  height: 100% !important;
-  background-color: rgba(249, 249, 249, 0.5) !important;
-  border-radius: 10px !important;
-  z-index: 0 !important;
-}
-
-.results-content {
-  position: relative !important;
-  z-index: 1 !important;
-  color: black !important;
-  font-weight: bold !important;
-  font-family: 'Roboto', sans-serif !important;
-  width: calc(100vw - 200px) !important;
-  list-style-type: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.results-content li {
-  padding: 10px 0 !important;
-  border-bottom: 1px solid #ccc !important;
-}
-
-.results-content li:last-child {
-  border-bottom: none !important;
-}
-
-.result-link {
-  color: #1a0dab !important;
-  text-decoration: none !important;
-}
-
-.result-link:hover {
-  text-decoration: underline !important;
-}
-
-.map-container {
-  width: calc(100vw - 200px) !important;
-  height: calc(60vh) !important;
-  /* Adjust height for the map */
-  margin-top: 20px !important;
-}
-
-.total-results {
-  position: fixed;
-  top: 182px;
-  left: 290px;
-  /* Move search box-wrapper more to the left */
-  z-index: 3;
-  /* Ensure it stays above other elements */
-  width: auto;
-  /* Adjust width to prevent overlapping with other elements */
-  margin-bottom: 20px;
-}
-
-.pagination {
-  position: fixed;
-  /* Fixes the element relative to the viewport */
-  bottom: 9px;
-  /* 20px from the bottom; adjust as needed */
-  left: 50%;
-  /* Positions the left edge at the center of the viewport */
-  transform: translateX(-50%);
-  /* Offsets the element by half its width to truly center it */
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  z-index: 10;
-  /* Ensure it stays above other elements */
+/* Title (blue link style) */
+.sr-title {
   margin: 0;
-  /* Remove any default margins */
+  font-size: 1.1rem;
+  color: #1a0dab;
 }
 
-
-.pagination-button {
-  padding: 10px 20px;
-  font-size: 1em;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-  z-index: 1;
+.sr-card:hover .sr-title {
+  text-decoration: underline;
 }
 
-.pagination-button:hover {
-  background-color: #0056b3;
+/* URL line (green) */
+.sr-url {
+  font-size: 0.85rem;
+  color: #006621;
+  margin: 0.25rem 0;
+}
+
+/* Snippet text */
+.sr-snippet {
+  margin: 0;
+  color: #545454;
+  font-size: 0.9rem;
+}
+
+/* Status messages */
+.status {
+  text-align: center;
+  color: #555;
+  padding: 2rem;
+}
+
+.status.error {
+  color: #a00;
 }

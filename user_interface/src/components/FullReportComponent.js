@@ -1,57 +1,70 @@
+// src/components/FullReportComponent.js
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { apiGet } from '../api';
 import '../styles/FullReportComponent.css';
 
-function FullReportComponent() {
-    const { hash } = useParams(); // URL parameter
+export default function FullReportComponent() {
+    const { reportId } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
 
-    const [record, setRecord] = useState(null);
+    // Try to get the record from navigation state first
+    const [record, setRecord] = useState(location.state?.record || null);
     const [error, setError] = useState(null);
-    const [reportName, setReportName] = useState('N/A'); // Default to 'N/A'
+    const [reportName, setReportName] = useState('N/A');
 
-    // Fetch the report details from the backend
     useEffect(() => {
-        fetch(`http://localhost:5000/api/report/${hash}`)
-            .then(async (response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setRecord(data);
-                // Extract the file name when the record is set
-                if (data?.file_path) {
-                    const parts = data.file_path.split(/[/\\]/); // Split by slashes
-                    const fileNameWithExtension = parts[parts.length - 1] || 'N/A'; // Extract the file name
-                    const fileNameWithoutExtension = fileNameWithExtension.split('.').slice(0, -1).join('.') || fileNameWithExtension; // Remove extension
-                    setReportName(fileNameWithoutExtension);
-                }
-            })
-            .catch((err) => setError(`An error occurred: ${err.message}`));
-    }, [hash]);
-
-    // Helper function to format lists or fallback to "N/A"
-    const formatList = (items) => {
-        if (Array.isArray(items)) {
-            return items.length > 0 ? items.join(', ') : 'N/A';
+        // If we already have the record (via state), skip fetching
+        if (record) {
+            deriveReportName(record);
+            return;
         }
+
+        // Otherwise fetch it from the backend
+        async function fetchRecord() {
+            try {
+                const res = await apiGet(`/report/${encodeURIComponent(reportId)}`);
+                const data = res.data;
+                setRecord(data);
+                deriveReportName(data);
+            } catch (err) {
+                setError(`An error occurred: ${err.message}`);
+            }
+        }
+
+        fetchRecord();
+    }, [reportId, record]);
+
+    // Helper to extract reportName from file_path if available
+    function deriveReportName(data) {
+        if (data?.file_path) {
+            const parts = data.file_path.split(/[/\\]/);
+            const fname = parts[parts.length - 1] || 'N/A';
+            const noExt = fname.split('.').slice(0, -1).join('.') || fname;
+            setReportName(noExt);
+        }
+    }
+
+    // Formatting helpers
+    const formatList = items => {
+        if (Array.isArray(items)) return items.length ? items.join(', ') : 'N/A';
         return typeof items === 'string' && items.trim() ? items : 'N/A';
     };
+    const formatText = text =>
+        text && text !== 'none_found' ? text : 'N/A';
 
-    const formatText = (text) => (text && text !== 'none_found' ? text : 'N/A');
-
-    // Conditional rendering for error or loading states
+    // Error state
     if (error) {
         return (
             <div className="full-report-container">
-                <p>Error: {error}</p>
+                <p className="error-message">{error}</p>
                 <button onClick={() => navigate(-1)}>Go Back</button>
             </div>
         );
     }
 
+    // Loading state
     if (!record) {
         return (
             <div className="full-report-container">
@@ -60,9 +73,13 @@ function FullReportComponent() {
         );
     }
 
+    // Render the full report
     return (
         <div className="full-report-container">
-            <button className="back-button" onClick={() => navigate(-1)}>
+            <button
+                className="back-button"
+                onClick={() => navigate(-1)}
+            >
                 Go Back
             </button>
 
@@ -71,11 +88,15 @@ function FullReportComponent() {
             <div className="form-style">
                 <div className="form-group">
                     <label>File Hash:</label>
-                    <div className="form-value">{formatText(record.SHA256_hash)}</div>
+                    <div className="form-value">
+                        {formatText(record.SHA256_hash)}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Classification:</label>
-                    <div className="form-value">{formatText(record.highest_classification)}</div>
+                    <div className="form-value">
+                        {formatText(record.highest_classification)}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Caveats:</label>
@@ -87,27 +108,39 @@ function FullReportComponent() {
                 </div>
                 <div className="form-group">
                     <label>Locations:</label>
-                    <div className="form-value">{formatList(record.locations)}</div>
+                    <div className="form-value">
+                        {formatList(record.locations)}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Timeframes:</label>
-                    <div className="form-value">{formatList(record.timeframes)}</div>
+                    <div className="form-value">
+                        {formatList(record.timeframes)}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Subjects:</label>
-                    <div className="form-value">{formatList(record.subjects?.split('|'))}</div>
+                    <div className="form-value">
+                        {formatList(record.subjects?.split('|'))}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Topics:</label>
-                    <div className="form-value">{formatList(record.topics?.split('|'))}</div>
+                    <div className="form-value">
+                        {formatList(record.topics?.split('|'))}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Keywords:</label>
-                    <div className="form-value">{formatList(record.keywords?.split(','))}</div>
+                    <div className="form-value">
+                        {formatList(record.keywords?.split(','))}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>MGRS:</label>
-                    <div className="form-value">{formatList(record.MGRS)}</div>
+                    <div className="form-value">
+                        {formatList(record.MGRS)}
+                    </div>
                 </div>
                 <div className="form-group">
                     <label>Processed Time:</label>
@@ -120,7 +153,7 @@ function FullReportComponent() {
             </div>
 
             {/* Images Section */}
-            {record.images && Array.isArray(record.images) && record.images.length > 0 && (
+            {Array.isArray(record.images) && record.images.length > 0 && (
                 <div className="form-section">
                     <h3>Images</h3>
                     <div className="images-grid">
@@ -139,10 +172,10 @@ function FullReportComponent() {
             {/* Full Text Section */}
             <div className="form-section">
                 <h3>Full Text</h3>
-                <div className="form-value full-text">{formatText(record.full_text)}</div>
+                <div className="form-value full-text">
+                    {formatText(record.full_text)}
+                </div>
             </div>
         </div>
     );
 }
-
-export default FullReportComponent;
